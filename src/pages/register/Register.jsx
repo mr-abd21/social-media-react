@@ -1,5 +1,7 @@
 import React from 'react'
 import './register.scss';
+import { Link } from "react-router-dom";
+
 export default function Register() {
   return (
     <div className='register'>
@@ -8,7 +10,9 @@ export default function Register() {
           <h1>Hello</h1>
           <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tenetur sunt totam fugit temporibus, cupiditate praesentium consectetur faci</p>
           <span>Do you have any account</span>
-          <button>Login</button>
+          <Link to="/login">
+            <button>Login</button>
+          </Link>
         </div>
         <div className="right">
           <h1>Register</h1>
@@ -17,7 +21,8 @@ export default function Register() {
             <input type="password" placeholder='Password'/>
             <input type="email" placeholder='email'/>
             <input type="text" placeholder='name'/>
-            <button>Register</button>
+              <button>Register</button>
+            
           </form>
         </div>
         </div>
