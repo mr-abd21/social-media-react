@@ -1,47 +1,67 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import './comments.scss';
-
+import {
+    useQuery,
+    useMutation,
+    useQueryClient,
+    
+  } from '@tanstack/react-query'
+import { makeRequest} from '../../axios'
 import { AuthContext } from '../../context/authContext';
+import moment from 'moment';
 
-export default function Comments() {
+export default function Comments({postId}) {
 
+    
+    const [description, setDesc] = useState("");
 
     const {currentUser} = useContext(AuthContext);
 
-    const comments = [
-        {
-            id : 1,
-            name : "Ahmed",
-            userId : 1,
-            desc : "Lorem ipsum dolor sit amet, consectetur adip",
-            profilePic : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH_lsI7PQgK6wt82XYo8f0osbKU60tDnBCBA&usqp=CAU",
-            img : "https://static.vecteezy.com/system/resources/thumbnails/022/716/824/small/cute-cool-boy-dabbing-pose-cartoon-icon-illustration-people-fashion-icon-concept-isolated-generat-ai-free-photo.jpg",
-        },
-        {
-            id : 2,
-            name : "Akasha",
-            userId : 2,
-            desc : "lorem ipsum dolor sit lorem ipsum lorem ipsum lorem ipsum dolor sit lorem ipsum lorem ipsum lorem ipsum dolor sit lorem ipsum lorem ipsum",
-            profilePic : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH_lsI7PQgK6wt82XYo8f0osbKU60tDnBCBA&usqp=CAU",
-            
-        },
+    const { isPending, error, data } = useQuery({
+        queryKey: ['comments'],
+        queryFn: () =>
+        makeRequest.get("/comments?postId="+postId).then(res => {
+            return res.data;
+          })
+      })
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (newComments) => {
         
-    ];
+      return makeRequest.post("/comments", newComments)
+    },
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['comments'] })   //use this to refresh see query key in posts.jsx
+    },
+  })
+
+
+  const handleClick = (e) => {
+    e.preventDefault();
+
+    console.log(postId)
+    mutation.mutate({description, postId})
+    setDesc("")
+  }
+   
   return (
     <div className='comments'>
         <div className="write">
             <img src={currentUser.profilePic} alt="" />
-            <input type="text" placeholder='write comment here'/>
-            <button>Send</button>
+            <input type="text" placeholder='write comment here' value={description} onChange={(e) => setDesc(e.target.value)}/>
+            <button onClick={handleClick}>Send</button>
         </div>
-        {comments.map((comment) => (
+        {isPending ? "wait...." : data.map((comment) => (
             <div className="comment">
                 <img src={comment.profilePic} alt="" />
                 <div className="info">
                     <span>{comment.name}</span>
-                    <p>{comment.desc}</p>
+                    <p>{comment.description}</p>
                 </div>
-                <span className='date'>1 hour ago</span>
+                <span className='date'>{moment(comment.createdAt).fromNow()}</span>
             </div>
         ))}
     </div>

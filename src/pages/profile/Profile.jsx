@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import './profile.scss';
 import FacebookTwoToneIcon from '@mui/icons-material/FacebookTwoTone';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
@@ -10,13 +10,36 @@ import LanguageIcon from '@mui/icons-material/Language';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Posts from '../../components/posts/Posts' ;
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  
+} from '@tanstack/react-query'
+import { makeRequest} from '../../axios'
+import { useLocation } from 'react-router-dom';
+import { AuthContext } from '../../context/authContext';
 
 export default function Profile() {
+
+  const {currentUser} = useContext(AuthContext);
+  const userId = parseInt(useLocation().pathname.split('/')[2])
+
+  const { isPending, error, data } = useQuery({
+    queryKey: ['user'],
+    queryFn: () =>
+    makeRequest.get("/users/find/"+userId).then(res => {
+        return res.data;
+      })
+  })
+
+  console.log(data)
+
   return (
     <div className='profile'>
-      <div className="images">
-        <img className='cover' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgpY1GKWgkzyM5bd39M-_ho8XzvFIW-d4kAQ&usqp=CAU"  alt="" />
-        <img className='profilePic' src="https://t3.ftcdn.net/jpg/06/22/68/92/360_F_622689267_605FSl7IS7letDVEFUaTUNTjh8zVyDJv.jpg" alt="" />
+      {isPending ? "wait....." : <> <div className="images">
+        <img className='cover' src={data.coverPic}  alt="" />
+        <img className='profilePic' src={data.profilePic} alt="" />
       </div>
       <div className="profileContainer">
         <div className="uInfo">
@@ -39,11 +62,11 @@ export default function Profile() {
           </div>
 
           <div className="center">
-            <span>Maaz Ali</span>
+            <span>{data.name}</span>
             <div className="info">
               <div className="item">
                 <PlaceIcon />
-                <span>Pakistan</span>
+                <span>{data.city}</span>
               </div>
 
               <div className="item">
@@ -51,7 +74,7 @@ export default function Profile() {
                 <span>Urdu</span>
               </div>
             </div>
-              <button>Follow</button>
+              {currentUser.id === userId ? <button>Update</button> :<button>Follow</button>}
             
           </div>
           <div className="right">
@@ -60,7 +83,7 @@ export default function Profile() {
           </div>
         </div>
           <Posts />
-      </div>
+      </div></>}
     </div>
   )
 }

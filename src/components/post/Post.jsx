@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import './post.scss'; 
 
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
@@ -9,12 +9,55 @@ import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import { Link } from 'react-router-dom';
 import Comments from '../comments/Comments';
 import moment from 'moment';
+import {
+    useQuery,
+    useMutation,
+    useQueryClient,
+    
+  } from '@tanstack/react-query'
+import { makeRequest} from '../../axios'
+import { AuthContext } from '../../context/authContext';
 
 export default function Post({post}) {
 
     const [openComment, setOpenComment] = useState(false);
+    const {currentUser} = useContext(AuthContext)
+    
+    const { isPending, error, data } = useQuery({
+        queryKey: ['likes', post.id],
+        queryFn: () =>
+        makeRequest.get("/likes?postId="+post.id).then(res => {
+            return res.data;
+          })
+      })
 
-    const liked = false;
+      const queryClient = useQueryClient();
+
+      const mutation = useMutation({
+        mutationFn: (liked) => {  
+          if(liked){
+            return makeRequest.delete("/likes?postId="+post.id)
+          }
+          else{
+            return makeRequest.post("/likes", {postId:post.id})  
+          }
+          
+        },
+        onSuccess: () => {
+          // Invalidate and refetch
+          queryClient.invalidateQueries({ queryKey: ['likes'] })   //use this to refresh see query key in posts.jsx
+        },
+      })
+    
+    
+      const handleClick = () => {
+        // e.preventDefault();
+        mutation.mutate(data.includes(currentUser.id))
+   
+      }
+
+
+    // const liked = false;
   return (
     <div className='post'>
         <div className="container">
@@ -36,8 +79,10 @@ export default function Post({post}) {
         </div>
         <div className="info">
             <div className="item">
-                {liked ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon /> }
-                12 Likes                
+                {isPending ? 
+                "wait..... " :
+                 data.includes(currentUser.id) ? <FavoriteOutlinedIcon onClick={handleClick} /> : <FavoriteBorderOutlinedIcon onClick={handleClick} /> }
+                {data && data.length} Likes             
             </div>
             
             <div className="item" onClick = {() => setOpenComment(!openComment)}>
@@ -51,7 +96,7 @@ export default function Post({post}) {
             </div>
 
         </div>
-        {openComment && <Comments />}
+        {openComment && <Comments postId={post.id} />}
         </div>
     </div>
   )

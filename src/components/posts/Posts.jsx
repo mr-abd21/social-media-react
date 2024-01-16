@@ -16,7 +16,7 @@ export default function Posts() {
           })
       })
 
-      console.log(data) 
+      // console.log(data) 
     // const posts = [
     //     { 
     //         id : 1,

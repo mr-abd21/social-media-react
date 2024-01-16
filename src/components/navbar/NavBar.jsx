@@ -24,7 +24,10 @@ export default function NavBar() {
         <Link to="/" style={{textDecoration:'none'}}>
           <span>Social</span>
         </Link>
-        <HomeOutlinedIcon />
+          
+        <Link to="/" style={{textDecoration:'none', color: 'inherit'}}>
+          <HomeOutlinedIcon />
+        </Link>
         {darkMode ? 
          <WbSunnyOutlinedIcon onClick={toggle} /> :
         <DarkModeOutlinedIcon onClick={toggle} /> 
@@ -42,8 +45,13 @@ export default function NavBar() {
         <NotificationsOutlinedIcon />
 
         <div className="user">
-          <img src={currentUser.profilePic} alt="" />          
-          <span>{currentUser.name}</span>
+              
+          <Link to={`/profile/${currentUser.userId}`} style={{textDecoration:'none'}}>
+          <img src={currentUser.profilePic} alt="" /> 
+          </Link>         
+          <Link to={`/profile/${currentUser.userId}`} style={{textDecoration:'none', color: 'inherit'}}>
+              <span>{currentUser.name}</span>
+          </Link>
         </div>
       </div>
     </div>
