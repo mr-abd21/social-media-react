@@ -46,10 +46,10 @@ export default function NavBar() {
 
         <div className="user">
               
-          <Link to={`/profile/${currentUser.userId}`} style={{textDecoration:'none'}}>
+          <Link to={`/profile/${currentUser.id}`} style={{textDecoration:'none'}}>
           <img src={currentUser.profilePic} alt="" /> 
           </Link>         
-          <Link to={`/profile/${currentUser.userId}`} style={{textDecoration:'none', color: 'inherit'}}>
+          <Link to={`/profile/${currentUser.id}`} style={{textDecoration:'none', color: 'inherit'}}>
               <span>{currentUser.name}</span>
           </Link>
         </div>

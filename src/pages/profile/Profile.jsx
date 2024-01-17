@@ -33,11 +33,42 @@ export default function Profile() {
       })
   })
 
-  console.log(data)
+  const { isPending : rLoading , data:rldata } = useQuery({
+    queryKey: ['relationship'],
+    queryFn: () =>
+    makeRequest.get("/relationships?followedUserId="+userId).then(res => {
+        return res.data;
+      })
+  })
+
+  const queryClient = useQueryClient();
+
+      const mutation = useMutation({
+        mutationFn: (liked) => {  
+          if(liked){
+            return makeRequest.delete("/relationships?followedUserId="+userId)
+          }
+          else{
+            return makeRequest.post("/relationships",{ userId })  
+          }
+          
+        },
+        onSuccess: () => {
+          // Invalidate and refetch
+          queryClient.invalidateQueries({ queryKey: ['relationship'] })   //use this to refresh see query key in posts.jsx
+        },
+      })
+    
+    
+      const handleFollow = () => {
+        // e.preventDefault();
+        mutation.mutate(rldata.includes(currentUser.id))
+   
+      }
 
   return (
     <div className='profile'>
-      {isPending ? "wait....." : <> <div className="images">
+      {error ? "error is here" : (isPending ? "wait....." : <> <div className="images">
         <img className='cover' src={data.coverPic}  alt="" />
         <img className='profilePic' src={data.profilePic} alt="" />
       </div>
@@ -74,7 +105,7 @@ export default function Profile() {
                 <span>Urdu</span>
               </div>
             </div>
-              {currentUser.id === userId ? <button>Update</button> :<button>Follow</button>}
+              {rLoading ? "wait .... " : currentUser.id === userId ? <button>Update</button> :<button onClick={handleFollow}>{rldata.includes(currentUser.id) ? "Following" : "Follow"}</button>}
             
           </div>
           <div className="right">
@@ -83,7 +114,7 @@ export default function Profile() {
           </div>
         </div>
           <Posts />
-      </div></>}
+      </div></>)}
     </div>
   )
 }

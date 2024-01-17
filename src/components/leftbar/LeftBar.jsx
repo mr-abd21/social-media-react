@@ -18,13 +18,14 @@ import { Link } from 'react-router-dom';
 
 export default function LeftBar() {
   const {currentUser} = useContext(AuthContext);
+
   return (
     <div className="leftbar">
       <div className="container">
         <div className="menu">
         <div className="user">
           <img src={currentUser.profilePic} alt="" />          
-          <Link to={`/profile/${currentUser.userId}`} style={{textDecoration:'none', color: 'inherit'}}>
+          <Link to={`/profile/${currentUser.id}`} style={{textDecoration:'none', color: 'inherit'}}>
               <span>{currentUser.name}</span>
           </Link>
         </div>
