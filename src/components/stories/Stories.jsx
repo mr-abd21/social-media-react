@@ -10,22 +10,22 @@ export default function Stories() {
         {
             id : 1,
             name : "Ahmed",
-            img : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH_lsI7PQgK6wt82XYo8f0osbKU60tDnBCBA&usqp=CAU",
+            img : "https://images.pexels.com/photos/5634864/pexels-photo-5634864.jpeg?auto=compress&cs=tinysrgb&w=600",
         },
         {
             id : 2,
-            name : "Abdullah",
-            img : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH_lsI7PQgK6wt82XYo8f0osbKU60tDnBCBA&usqp=CAU",
+            name : "Sami Ullah",
+            img : "https://images.pexels.com/photos/6953860/pexels-photo-6953860.jpeg?auto=compress&cs=tinysrgb&w=600",
         },
         {
             id : 3,
             name : "Ali",
-            img : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH_lsI7PQgK6wt82XYo8f0osbKU60tDnBCBA&usqp=CAU",
+            img : "https://images.pexels.com/photos/5635100/pexels-photo-5635100.jpeg?auto=compress&cs=tinysrgb&w=600",
         },
         {
             id : 4,
             name : "Akasha",
-            img : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH_lsI7PQgK6wt82XYo8f0osbKU60tDnBCBA&usqp=CAU",
+            img : "https://images.pexels.com/photos/4792728/pexels-photo-4792728.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
         },
     ];
 

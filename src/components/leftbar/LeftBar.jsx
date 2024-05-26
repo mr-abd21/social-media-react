@@ -106,6 +106,11 @@ export default function LeftBar() {
             <img src={Fund} alt="" />
             <span>Fund</span>
           </div>
+
+          <div className="item" >
+            <img src='https://img.icons8.com/?size=48&id=TmshBLOFvt3H&format=png' alt="" />
+            <span>Log Out</span>
+          </div>
         </div>
       </div>
       
